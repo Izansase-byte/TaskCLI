@@ -1,27 +1,33 @@
 fn main() {
-    let version = "0.1.0";
-    let mut tasks = Vec::new();
+    let version = "0.1.1";
     mostrar_bienvenida(version);
-    tasks.push(Task {
-        id: 1,
-        nombre: String::from("Estudiar fisica"),
-        completada: false,
-    });
-    tasks.push(Task {
-        id: 2,
-        nombre: String::from("Programar rust"),
-        completada: true,
-    });
-    tasks.push(Task {
-        id: 3,
-        nombre: String::from("Hacer deberes"),
-        completada: false,
-    });
-    agregar_tarea(&mut tasks, String::from("Leer un libro"));
+    let mut tasks = Vec::new();
+
+    agregar_tarea(&mut tasks, String::from("Tarea A"));
+    agregar_tarea(&mut tasks, String::from("Tarea B"));
+    agregar_tarea(&mut tasks, String::from("Tarea C"));
+
+    eliminar_tarea(&mut tasks, 2);
+
+    agregar_tarea(&mut tasks, String::from("Tarea D"));
+
+    completar_tarea(&mut tasks, 4);
 
     listar_tareas(&tasks);
-    println!("Tareas totales: {}", tasks.len());
+
 }
+fn eliminar_tarea(tareas: &mut Vec<Task>, id: u32) {
+    let  numero_tareas = tareas.iter().position(|tarea| tarea.id == id);
+    match numero_tareas {
+        Some(posicion) => {   
+            tareas.remove(posicion);
+            println!("Tarea con ID: {} eliminada!", id);
+        }
+        None => {
+            println!("No existe la tarea con ID: {}", id);
+}}}
+
+
 fn mostrar_bienvenida(version: &str) {
     println!("Bienvenido a Task-CLI!");
     println!("Version: {}", version);
@@ -42,12 +48,27 @@ fn listar_tareas(tareas: &Vec<Task>) {
 }
 fn agregar_tarea(tareas: &mut Vec<Task>, nombre: String) {
     let texto = String::from(nombre);
-    let id = tareas.len() as u32 + 1;
+    let id = tareas.iter().map(|tarea| tarea.id).max().unwrap_or(0) + 1;
     tareas.push(Task {
         id,
         nombre: texto,
         completada: false,
     })
+}
+fn completar_tarea(tareas: &mut Vec<Task>, id: u32) {
+    let mut tarea_encontrada = false;
+    
+    for tarea in tareas.iter_mut() {
+        if tarea.id == id {
+            tarea.completada = true;
+            println!("Tarea: {} completada!", tarea.id);
+            tarea_encontrada = true;
+            break;
+        }}
+    if tarea_encontrada ==false || id <= 0 {
+    println!("No existe la tarea con ID: {}", id);
+    return;
+    }
 }
 
 struct Task {
